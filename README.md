@@ -1,10 +1,13 @@
 # Movies-Library
+
 # Movies-Library - 1.0v
 
 **Author Name**: ibrahim adnan
 
 ## WRRC
-  ![WRRC](/assests/WRRC.jpeg)
+
+  ![WRRC](/assests/WRRC2.jpeg)
+
 ## Overview
 
 ## Getting Started
@@ -13,6 +16,10 @@
 - Initialize your project by running the following command "npm init -y".
 - Create basic file structure (server.js)
 - Install the required packages for this lab: "npm install express"
+- npm i cors
+- npm i nodemon
+- npm install axios
+- npm install axios
 
 ## Project Features
 <!-- What are the features included in you app -->
@@ -23,3 +30,10 @@
 (status 500)  is printing the server error ,
 (status 404)  is printing page not found error".
 }
+- the server has "/search"  to Search for movies.
+
+- the server has "/trending" to Get the daily or weekly trending items. The daily trending list tracks items over the period of a day while items have a 24 hour half life. The weekly list tracks items over a 7 day period, with a 7 day half life.
+
+- the server has "/Popular" to Get a list of the current popular movies on TMDB. This list updates daily.
+
+- the server has "/TopRated" to Get the top rated movies on TMDB.
