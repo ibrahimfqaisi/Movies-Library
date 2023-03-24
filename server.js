@@ -1,21 +1,31 @@
 'use strict';
 
 const express = require('express')
+const bodyParser = require('body-parser')
 const recipeData = require('./Movie Data/data.json')
 const cors = require('cors');
 const axios = require('axios');
 require('dotenv').config();
 const app = express();
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
 app.use(cors());
+const { Client } = require('pg')
+const url = process.env.URL;
 const port = process.env.PORT;
 const my_key = process.env.MY_KEY;
+const client = new Client(url)
+
 app.get('/', homePageHandler);
 app.get("/favorite", favoriteHandeler)
 app.get("/search", searchHandeler);
 app.get("/trending", trendingHandeler)
 app.get("/Popular", PopularHandeler)
 app.get("/TopRated", TopRatedHandeler)
-// app.use(handleServerError);
+app.post('/addMovie', addMovieHandeler);
+app.get('/getMovies', getMoviesHandeler);
+
+app.use(handleServerError);
 app.get('*', handlePageNotFoundError);
 
 
@@ -31,8 +41,8 @@ function trendingHandeler(req, res) {
             })
             res.json(dataTrending);
         })
-        .catch((err) => {
-            console.log(err);
+        .catch((error) => {
+            handleServerError(error, req, res)
         })
 
 }
@@ -45,8 +55,8 @@ function TopRatedHandeler(req, res) {
 
             res.json(result.data.results);
         })
-        .catch((err) => {
-            console.log(err);
+        .catch((error) => {
+            handleServerError(error, req, res)
         })
 }
 function PopularHandeler(req, res) {
@@ -61,12 +71,11 @@ function PopularHandeler(req, res) {
             })
             res.json(Popular);
         })
-        .catch((err) => {
-            console.log(err);
+        .catch((error) => {
+            handleServerError(error, req, res)
         })
+
 }
-
-
 function searchHandeler(req, res) {
     let filmName = req.query.name // name it as you want 
 
@@ -78,15 +87,13 @@ function searchHandeler(req, res) {
 
             res.json(result.data.results);
         })
-        .catch((err) => {
-            console.log(err);
+        .catch((error) => {
+            handleServerError(error, req, res)
         })
 }
 
 
-// function handleServerError(err, req, res, next) {
-//     res.status(500).json({ status: 500, responseText: "Sorry, something went wrong" });
-// }
+
 
 function favoriteHandeler(req, res) {
 
@@ -99,6 +106,24 @@ function homePageHandler(req, res) {
     res.send(newdata)
 }
 
+function addMovieHandeler(req, res) {
+    console.log(req.body)
+    let { Film_name, Film_duration, rating } = req.body
+    let sql = `INSERT INTO movies_info (Film_name,Film_duration,rating)
+        VALUES ($1, $2, $3) RETURNING *;`
+    let value = [Film_name, Film_duration, rating]
+    client.query(sql, value).then((result) => {
+        res.status(201).json(result.rows);
+    }).catch()
+    
+}
+function getMoviesHandeler(req,res){
+let sql= ` SELECT * FROM movies_info;`
+client.query(sql).then((result) =>{
+    res.status(201).json(result.rows);
+}).catch()
+
+}
 function Reformat(title, poster_path, overview) {
     this.title = title;
     this.poster_path = poster_path;
@@ -107,7 +132,9 @@ function Reformat(title, poster_path, overview) {
 function handlePageNotFoundError(req, res) {
     res.status(404).send("Sorry, the requested page could not be found");
 }
-
+function handleServerError(err, req, res, next) {
+    res.status(500).json({ status: 500, responseText: "Sorry, something went wrong" });
+}
 function Reformat2(id, title, release_date, poster_path, overview) {
     this.id = id;
     this.title = title;
@@ -117,6 +144,12 @@ function Reformat2(id, title, release_date, poster_path, overview) {
 }
 
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+client.connect().then(() => {
+
+    app.listen(port, () => {
+        console.log(`Server is listening ${port}`);
+    });
 })
+
+
+
