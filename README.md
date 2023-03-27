@@ -1,12 +1,12 @@
 # Movies-Library
 
-# Movies-Library - 1.0v
+# Movies-Library - 2.0v
 
 **Author Name**: ibrahim adnan
 
 ## WRRC
 
-  ![WRRC](/assests/WRRC3.jpeg)
+  ![WRRC](/assests/WRRC4.jpeg)
 
 ## Overview
 
@@ -43,3 +43,8 @@
 
 - the server has "/getMovies" to Create a get request to get all the data from the database.
 
+- the server has "/UPDATE/id" to create an update request to update your comments for a specific movie in the database.
+
+- the server has "/DELETE/id" to create a delete request to remove a specific movie from your database.
+
+- the server has "getMovie/id" to Create a get request to get a specific movie from the database .
