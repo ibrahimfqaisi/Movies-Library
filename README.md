@@ -42,3 +42,4 @@
 - the server has "/addMovie" to create a post request to save a specific movie to database along with your personal comments.
 
 - the server has "/getMovies" to Create a get request to get all the data from the database.
+

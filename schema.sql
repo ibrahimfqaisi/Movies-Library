@@ -1,5 +1,5 @@
    CREATE TABLE movies_info (
-    Film_name VARCHAR,
-    Film_duration VARCHAR,
-    rating VARCHAR
+    title VARCHAR,
+    poster_path VARCHAR,
+    overviewAndComments VARCHAR
    )

@@ -108,10 +108,10 @@ function homePageHandler(req, res) {
 
 function addMovieHandeler(req, res) {
     console.log(req.body)
-    let { Film_name, Film_duration, rating } = req.body
-    let sql = `INSERT INTO movies_info (Film_name,Film_duration,rating)
+    let { title, poster_path, overviewAndComments } = req.body
+    let sql = `INSERT INTO movies_info (title, poster_path, overviewAndComments)
         VALUES ($1, $2, $3) RETURNING *;`
-    let value = [Film_name, Film_duration, rating]
+    let value = [title, poster_path, overviewAndComments]
     client.query(sql, value).then((result) => {
         res.status(201).json(result.rows);
     }).catch()
