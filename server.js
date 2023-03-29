@@ -24,10 +24,51 @@ app.get("/Popular", PopularHandeler)
 app.get("/TopRated", TopRatedHandeler)
 app.post('/addMovie', addMovieHandeler);
 app.get('/getMovies', getMoviesHandeler);
+app.put('/UPDATE/:id',handleUpdate)//params;
+app.delete('/DELETE/:id', handleDelete);
+app.put('/getMovie/:id', handlegetMovie);
 
 app.use(handleServerError);
 app.get('*', handlePageNotFoundError);
 
+function handleUpdate(req,res){
+    console.log(req.params.id);
+    let id = req.params.id // params
+    let {title, poster_path, overviewAndComments} = req.body;
+    let sql=`UPDATE movies_info SET title = $1, poster_path = $2, overviewAndComments=$3 
+    WHERE id = $4 RETURNING *;`;
+    let values = [title,poster_path,overviewAndComments,id];
+    client.query(sql,values).then(result=>{
+        console.log(result.rows);
+        res.send(result.rows)
+    }).catch()
+
+}
+
+function handlegetMovie(req,res){
+    console.log(req.params.id);
+    let id = req.params.id // params
+    let sql=`SELECT * FROM movies_info WHERE id = $1 ;`;
+    let values = [id];
+    client.query(sql,values).then(result=>{
+        console.log(result.rows);
+        res.send(result.rows)
+    }).catch()
+
+}
+
+function handleDelete(req,res){
+    let {id} = req.params; //destructuring
+    //or
+    //let id = req.params.id
+    let sql=`DELETE FROM movies_info WHERE id = $1;` ;
+    let value = [id];
+    client.query(sql,value).then(result=>{
+        res.status(204).send("deleted");
+    }).catch()
+
+
+}
 
 function trendingHandeler(req, res) {
 
